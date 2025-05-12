@@ -618,7 +618,7 @@ def get_enhanced_recommendations(user_input, recommender_df, cosine_sim, top_n=5
 
     return pd.DataFrame(recommended_products) if recommended_products else "No relevant recommendations found."
 # Ensure these state variables exist
-
+############################################################################STREAMLIT
 if 'selected_product' not in st.session_state:
     st.session_state.selected_product = None
 
@@ -697,6 +697,7 @@ if st.session_state.Page == 'Home':
             st.markdown('</div>', unsafe_allow_html=True)
 
 elif st.session_state.Page == "Features Distributions":
+    st.title("Feature distributions")
     # Step 2: Create Distribution Plots
     fig = make_subplots(rows=4, cols=2, 
                         subplot_titles=(
@@ -755,6 +756,7 @@ elif st.session_state.Page == "Features Distributions":
     if st.button("Back "):
         go_to('DashBoard')
 elif st.session_state.Page == "Price per Category":
+    st.title("The Price Per Crtegory")   
     grouped_data = []
     labels = []
 
@@ -795,6 +797,8 @@ elif st.session_state.Page == "Price per Category":
     if st.button("Back "):
         go_to('DashBoard')
 elif st.session_state.Page =="Most_Products have low_price":
+    st.title("The most Products have low_price")
+
     # KDE for price
     ff_fig = ff.create_distplot([df['price_ratio']],
             group_labels=['price_ratio'], colors=['#FFA07A'], show_hist=True)
@@ -830,6 +834,7 @@ elif st.session_state.Page =="Most_Products have low_price":
     if st.button("Back "):
         go_to('DashBoard')
 elif st.session_state.Page == "The most frequent Brand":
+    st.title("The most frequent Brand")
         # Step 1: Get top 50 brands
     top_brands = df['brand'].value_counts().nlargest(50).index
 
@@ -857,6 +862,7 @@ elif st.session_state.Page == "The most frequent Brand":
     if st.button("Back"):
         go_to('DashBoard')
 elif st.session_state.Page=="Percentage of the Prducts price categoties":
+    st.title("The percentage of the product price")
     # Create the pie chart in the same style
     fig3 = px.pie(
         price_category_df,
@@ -882,6 +888,7 @@ elif st.session_state.Page=="Percentage of the Prducts price categoties":
     if st.button("Back "):
             go_to('DashBoard')
 elif st.session_state.Page=="Total sales per price category":
+    st.title("The Total sales per price")
     # 3. Group by price_ratio_category and sum sales
     price_by_ratio = df.groupby('price_ratio_category')['price'].sum().reset_index()
 
@@ -904,6 +911,7 @@ elif st.session_state.Page=="Total sales per price category":
     if st.button("Back "):
             go_to('DashBoard')
 elif st.session_state.Page=="The percentage of the product categories in the shop ":
+    st.title("The percentage of the products categories in the shop")
     # Create the pie chart using Plotly
     fig1 = px.pie(
         category_df,
@@ -924,8 +932,9 @@ elif st.session_state.Page=="The percentage of the product categories in the sho
     However, **kitchen appliances** (0.59%) is almost invisible.
     """)
     if st.button("Back "):
-            go_to('DashBoard')
-elif st.session_state.Page=="The total sales per producr category":
+        go_to('DashBoard')
+elif st.session_state.Page=="The total sales per product category":
+    st.title("The total sales per products categories")
     fig = px.bar(price_by_category, 
                             x=price_by_category.index, 
                             y=price_by_category.values, 
@@ -944,10 +953,12 @@ elif st.session_state.Page=="The total sales per producr category":
     if st.button("Back "):
             go_to('DashBoard')
 elif st.session_state.Page=="Review the ratting count":
-    fig = px.violin(
-                        df.dropna(subset=['review_category']),  # Exclude NaN categories from plot
+    st.title("The review count")
+    df_1=df.dropna(subset=['review_category'])  # Exclude NaN categories from plot
+    fig = px.violin( 
+                        data_frame=df_1,
                         x="review_category",
-                        y=np.log1p(df["review_count"]),
+                        y=np.log1p(df_1["review_count"]),
                         box=True,
                         points=False,
                         color="review_category",
@@ -982,6 +993,7 @@ elif st.session_state.Page=="Review the ratting count":
     if st.button("Back "):
         go_to('DashBoard')
 elif st.session_state.Page=="The most frequent ratting":
+    st.title("The most frequent ratting")
     fig2 = px.histogram(
                             df,
                             x='rating',
@@ -1004,6 +1016,7 @@ elif st.session_state.Page=="The most frequent ratting":
     if st.button("Back "):
             go_to('DashBoard')
 elif st.session_state.Page=="The total sales for the top 20 brands":
+    st.title("The total sales for the top 20 brands")
     # --- Plotly Vertical Bar Chart ---
     fig = px.bar(
         brand_price_df,
@@ -1033,6 +1046,7 @@ elif st.session_state.Page=="The total sales for the top 20 brands":
     if st.button("Back "):
         go_to('DashBoard')
 elif st.session_state.Page=="Tob ten products seller":
+    st.title("The top 10 product seller")
     # Step 1: Get the top 10 best sellers sorted by engagement
     top_10 = df[df['is_best_seller']].sort_values(by='engagement_score', ascending=False).head(10)
 
@@ -1051,7 +1065,7 @@ elif st.session_state.Page=="Tob ten products seller":
     fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
     fig.update_layout(xaxis_tickangle=-45, yaxis=dict(title='Engagement Score'))
     st.plotly_chart(fig, use_container_width=True)
-    st.dataframe(best_sellers[['name', 'brand', 'category', 'engagement_score', 'best_seller_score']].head(10))
+
     if st.button("Back "):
             go_to('DashBoard')
 elif st.session_state.Page =="DashBoard":
@@ -1064,13 +1078,13 @@ elif st.session_state.Page =="DashBoard":
             go_to("Features Distributions")
         if st.button("Price per Category",use_container_width=True):
             go_to("Price per Category")
-        if st.button("Most_Products have low_price",use_container_width=True):
+        if st.button("The Products have low_price",use_container_width=True):
             go_to("Most_Products have low_price")
-        if st.button("The percentage of the product categories in the shop ",use_container_width=True):
+        if st.button("The percentage of product categories",use_container_width=True):
                 go_to("The percentage of the product categories in the shop ")
         
-        if st.button("The total sales per producr category",use_container_width=True):
-            go_to("The total sales per producr category")
+        if st.button("The total sales per category",use_container_width=True):
+            go_to("The total sales per product category")
     
         if st.button("Review the ratting count",use_container_width=True):
             go_to("Review the ratting count")
@@ -1188,8 +1202,6 @@ elif st.session_state.Page == 'SearchResults':
                 </div>
             """, unsafe_allow_html=True)
 
-    
-
 # Customer Page
 elif st.session_state.Page == 'Customer':
     col1, col2 = st.columns([4,2])
@@ -1208,7 +1220,6 @@ elif st.session_state.Page == 'Customer':
     st.write("You can Entre name of a Product/Category/Brand")
     st.text_input("What do you want to buy?", key="search_input", on_change=trigger_search)
 
- 
     st.markdown("## 🔥 Top 10 Best Sellers")
     top_10 = df[df['is_best_seller']].sort_values(by='engagement_score', ascending=False).head(10)
 
